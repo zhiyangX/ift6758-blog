@@ -3,8 +3,8 @@
 source "https://rubygems.org"
 
 git_source(:github) { |
-ift6758-blog| "https://github.com/#{
-ift6758-blog}" }
+ift6758blog| "https://github.com/#{
+ift6758blog}" }
 
  gem "rails"
  gem "jekyll-gist"
