@@ -3,7 +3,7 @@ title: IFT6758 Blog
 tagline: ""
 description: ""
 url: "https://zhiyangx.github.io/"
-baseurl: "/ift6758-blog"
+baseurl: "ift6758-blog"
 paginate: 5
 permalink: pretty
 
