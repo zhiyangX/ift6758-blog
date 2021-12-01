@@ -18579,235 +18579,32 @@ all of MD as it is not optimized for dense, information rich UIs.
         </h3>
       </div>
     </div>
-    <div class="jp-Cell-inputWrapper">
-      <div
-        class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput"
-        data-mime-type="text/markdown"
-      >
-        <p>For mileStone2 dataset add new feature:</p>
-        <ul>
-          <li>Distance from net</li>
-          <li>Angle from net</li>
-          <li>Is goal (0 or 1)</li>
-          <li>Empty Net (0 or 1; you can assume NaNs are 0)</li>
-        </ul>
-      </div>
-    </div>
-    <div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-      <div class="jp-Cell-inputWrapper">
-        <div class="jp-InputArea jp-Cell-inputArea">
-          <div
-            class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor"
-            data-type="inline"
-          >
-            <div class="CodeMirror cm-s-jupyter">
-              <div class="highlight hl-ipython3">
-                <pre><span></span><span class="k">def</span> <span class="nf">get_goal_coordinates</span><span class="p">(</span><span class="n">rinkSide</span><span class="p">,</span> <span class="n">opposite</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span> 
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Input: </span>
-<span class="sd">    - rinkSide: The column &quot;rinkSide&quot; which is part of the dataframe; indicates which side of the rink the home-team starts (period == 1) </span>
-<span class="sd">    - opposite: boolean</span>
-<span class="sd">    Output: </span>
-<span class="sd">    - An array of shape (1 x 2); [x, y];  containing the coordinates of the goal post</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">left_goal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">89</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-    <span class="n">right_goal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">89</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span> 
-    <span class="k">if</span> <span class="n">opposite</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span> 
-        <span class="k">if</span> <span class="n">rinkSide</span> <span class="o">==</span> <span class="s2">&quot;left&quot;</span><span class="p">:</span> 
-            <span class="k">return</span> <span class="n">right_goal</span>
-        <span class="k">else</span><span class="p">:</span> 
-            <span class="k">return</span> <span class="n">left_goal</span>
-    <span class="k">else</span><span class="p">:</span> 
-        <span class="k">if</span> <span class="n">rinkSide</span> <span class="o">==</span> <span class="s2">&quot;left&quot;</span><span class="p">:</span> 
-            <span class="k">return</span> <span class="n">left_goal</span>
-        <span class="k">else</span><span class="p">:</span> 
-            <span class="k">return</span> <span class="n">right_goal</span>
-                         
-<span class="k">def</span> <span class="nf">get_shot_distance</span><span class="p">(</span><span class="n">df2</span><span class="p">):</span> 
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the distance of shot from the (target) goal for each shot in the dataframe</span>
-<span class="sd">    Input: </span>
-<span class="sd">    - df2: dataframe; shape (m x n) </span>
-<span class="sd">    Output: </span>
-<span class="sd">    - np-array; shape (m x 1) </span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">df2</span> <span class="o">=</span> <span class="n">df2</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">distance</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">shot</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df2</span><span class="p">)):</span> 
-        <span class="n">shot_coordinates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">df2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">shot</span><span class="p">,</span> <span class="s1">&#39;coordinates x&#39;</span><span class="p">],</span> <span class="n">df2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">shot</span><span class="p">,</span> <span class="s1">&#39;coordinates y&#39;</span><span class="p">]])</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">df2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">shot</span><span class="p">,</span> <span class="s1">&#39;period num&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">%</span> <span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> 
-            <span class="k">if</span> <span class="n">df2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">shot</span><span class="p">,</span> <span class="s1">&#39;team name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">df2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">shot</span><span class="p">,</span> <span class="s1">&#39;home name&#39;</span><span class="p">]:</span>
-                <span class="n">distance</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">shot_coordinates</span> <span class="o">-</span> <span class="n">get_goal_coordinates</span><span class="p">(</span><span class="n">df2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">shot</span><span class="p">,</span> <span class="s1">&#39;rinkSide&#39;</span><span class="p">],</span> <span class="n">opposite</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)))</span>
-            <span class="k">else</span><span class="p">:</span> 
-                <span class="n">distance</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">shot_coordinates</span> <span class="o">-</span> <span class="n">get_goal_coordinates</span><span class="p">(</span><span class="n">df2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">shot</span><span class="p">,</span> <span class="s1">&#39;rinkSide&#39;</span><span class="p">],</span> <span class="n">opposite</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)))</span>
-        <span class="k">else</span><span class="p">:</span> 
-            <span class="k">if</span> <span class="n">df2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">shot</span><span class="p">,</span> <span class="s1">&#39;team name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">df2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">shot</span><span class="p">,</span> <span class="s1">&#39;home name&#39;</span><span class="p">]:</span><span class="c1"># rinkSide</span>
-                <span class="n">distance</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">shot_coordinates</span> <span class="o">-</span> <span class="n">get_goal_coordinates</span><span class="p">(</span><span class="n">df2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">shot</span><span class="p">,</span> <span class="s1">&#39;rinkSide&#39;</span><span class="p">],</span> <span class="n">opposite</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)))</span>
-            <span class="k">else</span><span class="p">:</span> 
-                <span class="n">distance</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">shot_coordinates</span> <span class="o">-</span> <span class="n">get_goal_coordinates</span><span class="p">(</span><span class="n">df2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">shot</span><span class="p">,</span> <span class="s1">&#39;rinkSide&#39;</span><span class="p">],</span> <span class="n">opposite</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)))</span>
-            
-    <span class="k">return</span> <span class="n">distance</span>
-</pre>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-      <div class="jp-Cell-inputWrapper">
-        <div class="jp-InputArea jp-Cell-inputArea">
-          <div
-            class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor"
-            data-type="inline"
-          >
-            <div class="CodeMirror cm-s-jupyter">
-              <div class="highlight hl-ipython3">
-                <pre><span></span><span class="k">def</span> <span class="nf">get_direction</span><span class="p">(</span><span class="n">shot</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">  Return to the side of the net to which the shot was directed</span>
-<span class="sd">  input:</span>
-<span class="sd">  - shot: a row of dataframe; shape (m x 1)</span>
-<span class="sd">  Output:</span>
-<span class="sd">  - bool: True for the left side, False for the right side</span>
-<span class="sd">  &quot;&quot;&quot;</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">shot</span><span class="p">[</span><span class="s1">&#39;period num&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">%</span> <span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">shot</span><span class="p">[</span><span class="s1">&#39;team name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">shot</span><span class="p">[</span><span class="s1">&#39;home name&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">shot</span><span class="p">[</span><span class="s1">&#39;rinkSide&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;right&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">shot</span><span class="p">[</span><span class="s1">&#39;team name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">shot</span><span class="p">[</span><span class="s1">&#39;away name&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">shot</span><span class="p">[</span><span class="s1">&#39;rinkSide&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;left&#39;</span><span class="p">):</span>
-      <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">else</span><span class="p">:</span>
-      <span class="k">return</span> <span class="kc">False</span>
-  <span class="k">else</span><span class="p">:</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">shot</span><span class="p">[</span><span class="s1">&#39;team name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">shot</span><span class="p">[</span><span class="s1">&#39;home name&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">shot</span><span class="p">[</span><span class="s1">&#39;rinkSide&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;right&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">shot</span><span class="p">[</span><span class="s1">&#39;team name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">shot</span><span class="p">[</span><span class="s1">&#39;away name&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">shot</span><span class="p">[</span><span class="s1">&#39;rinkSide&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;left&#39;</span><span class="p">):</span>
-      <span class="k">return</span> <span class="kc">False</span>
-    <span class="k">else</span><span class="p">:</span>
-      <span class="k">return</span> <span class="kc">True</span>
-
-<span class="k">def</span> <span class="nf">get_shot_angle</span><span class="p">(</span><span class="n">df2</span><span class="p">):</span> 
-  <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">  Returns the angle of shot from the (target) goal for each shot in the dataframe</span>
-<span class="sd">  left goal net: Clockwise [0,360]</span>
-<span class="sd">  right goal net: anticlockwise [0,360]</span>
-<span class="sd">  Input: </span>
-<span class="sd">  - df2: dataframe; shape (m x n) </span>
-<span class="sd">  Output: </span>
-<span class="sd">  - np-array; shape (m x 1) </span>
-<span class="sd">  &quot;&quot;&quot;</span>
-  <span class="n">df2</span> <span class="o">=</span> <span class="n">df2</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-  <span class="n">angle</span> <span class="o">=</span> <span class="p">[]</span>
-  <span class="k">for</span> <span class="n">shot</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df2</span><span class="p">)):</span> 
-      <span class="k">if</span><span class="p">(</span><span class="n">df2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">shot</span><span class="p">,</span> <span class="s1">&#39;Distance from net&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
-          <span class="n">angle</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-      <span class="k">else</span><span class="p">:</span>
-          <span class="k">if</span> <span class="n">get_direction</span><span class="p">(</span><span class="n">df2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">shot</span><span class="p">]):</span>
-              <span class="k">if</span> <span class="n">df2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">shot</span><span class="p">,</span> <span class="s1">&#39;coordinates x&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="mi">89</span><span class="p">:</span>
-                  <span class="n">angle</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">df2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">shot</span><span class="p">,</span> <span class="s1">&#39;coordinates y&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">df2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">shot</span><span class="p">,</span> <span class="s1">&#39;Distance from net&#39;</span><span class="p">])))</span>
-              <span class="k">else</span><span class="p">:</span>
-                  <span class="n">angle</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">180</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span> <span class="o">-</span> <span class="n">df2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">shot</span><span class="p">,</span> <span class="s1">&#39;coordinates y&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">df2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">shot</span><span class="p">,</span> <span class="s1">&#39;Distance from net&#39;</span><span class="p">])))</span>
-          <span class="k">else</span><span class="p">:</span>
-              <span class="k">if</span> <span class="n">df2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">shot</span><span class="p">,</span> <span class="s1">&#39;coordinates x&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">89</span><span class="p">:</span>
-                  <span class="n">angle</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span> <span class="o">-</span> <span class="n">df2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">shot</span><span class="p">,</span> <span class="s1">&#39;coordinates y&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">df2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">shot</span><span class="p">,</span> <span class="s1">&#39;Distance from net&#39;</span><span class="p">])))</span>
-              <span class="k">else</span><span class="p">:</span>
-                  <span class="n">angle</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">180</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">df2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">shot</span><span class="p">,</span> <span class="s1">&#39;coordinates y&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">df2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">shot</span><span class="p">,</span> <span class="s1">&#39;Distance from net&#39;</span><span class="p">])))</span>
-  <span class="k">return</span> <span class="n">angle</span>
-                  
-
-               
-</pre>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-      <div class="jp-Cell-inputWrapper">
-        <div class="jp-InputArea jp-Cell-inputArea">
-          <div
-            class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor"
-            data-type="inline"
-          >
-            <div class="CodeMirror cm-s-jupyter">
-              <div class="highlight hl-ipython3">
-                <pre><span></span><span class="k">def</span> <span class="nf">addNewCol</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
-  <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">  Adding four new features: Distance from net, Angle from net, is goal, Empty Net</span>
-<span class="sd">  Input: an array of shape (m x n)</span>
-<span class="sd">  Output: an array of shape ((m+4) x n)</span>
-<span class="sd">  &#39;&#39;&#39;</span>
-  <span class="c1">#Distance from net</span>
-  <span class="n">distances</span> <span class="o">=</span> <span class="p">[]</span> 
-  <span class="k">for</span> <span class="n">name</span><span class="p">,</span><span class="n">group</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;season&#39;</span><span class="p">):</span>
-    <span class="n">distances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_shot_distance</span><span class="p">(</span><span class="n">group</span><span class="p">))</span>  
-  <span class="n">df</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="s1">&#39;Distance from net&#39;</span><span class="p">,</span> <span class="n">distances</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-
-  <span class="c1">#Angle from net</span>
-  <span class="n">angles</span> <span class="o">=</span> <span class="p">[]</span>
-  <span class="k">for</span> <span class="n">_</span><span class="p">,</span><span class="n">group</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;season&#39;</span><span class="p">):</span>
-    <span class="n">angles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_shot_angle</span><span class="p">(</span><span class="n">group</span><span class="p">))</span>  
-  <span class="n">df</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">21</span><span class="p">,</span> <span class="s1">&#39;Angle from net&#39;</span><span class="p">,</span> <span class="n">angles</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-
-  <span class="c1">#is goal(0 or 1)</span>
-  <span class="n">isGoal</span> <span class="o">=</span> <span class="p">[]</span>
-  <span class="n">shot_or_goal</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;shot or goal&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">shot_or_goal</span><span class="p">:</span>
-    <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="s1">&#39;Goal&#39;</span><span class="p">:</span>
-      <span class="n">isGoal</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-      <span class="n">isGoal</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-  <span class="n">df</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">22</span><span class="p">,</span> <span class="s1">&#39;Is goal&#39;</span><span class="p">,</span> <span class="n">isGoal</span><span class="p">)</span>
-
-  <span class="c1">#Empty Net (0 or 1; NaNs are 0)</span>
-  <span class="n">isEmptyNet</span> <span class="o">=</span> <span class="p">[]</span>
-  <span class="n">empty_net</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;empty net&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">empty_net</span><span class="p">:</span>
-    <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="s1">&#39;True&#39;</span><span class="p">:</span>
-      <span class="n">isEmptyNet</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-      <span class="n">isEmptyNet</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-  <span class="n">df</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">23</span><span class="p">,</span> <span class="s1">&#39;Empty Net&#39;</span><span class="p">,</span> <span class="n">isEmptyNet</span><span class="p">)</span>
-  <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;empty net&#39;</span><span class="p">],</span><span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
-  <span class="k">return</span> <span class="n">df</span>
-
-<span class="c1">#addNewCol(df_dataset_R)</span>
-<span class="c1">#df_dataset_R = df_dataset_R.reset_index(drop=True)</span>
-</pre>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="jp-Cell-inputWrapper">
-      <div
-        class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput"
-        data-mime-type="text/markdown"
-      >
-        <h2 id="Histograms">
-          <strong>Histograms</strong
-          ><a class="anchor-link" href="#Histograms">&#182;</a>
-        </h2>
-        <h3 id="Separate-goal-ans-non-goal">
-          Separate goal ans non goal<a
-            class="anchor-link"
-            href="#Separate-goal-ans-non-goal"
-            >&#182;</a
-          >
-        </h3>
-      </div>
-    </div>
-    <div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-      <div class="jp-Cell-inputWrapper">
-        <div class="jp-InputArea jp-Cell-inputArea">
-          <div
-            class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor"
-            data-type="inline"
-          >
-            <div class="CodeMirror cm-s-jupyter">
-              <div class="highlight hl-ipython3">
-                <pre><span></span><span class="n">goal</span> <span class="o">=</span> <span class="n">df_dataset_R</span><span class="p">[</span><span class="n">df_dataset_R</span><span class="p">[</span><span class="s1">&#39;shot or goal&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Goal&#39;</span><span class="p">]</span> 
-<span class="n">nonGoal</span> <span class="o">=</span> <span class="n">df_dataset_R</span><span class="p">[</span><span class="n">df_dataset_R</span><span class="p">[</span><span class="s1">&#39;shot or goal&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Shot&#39;</span><span class="p">]</span>
-</pre>
-              </div>
+    <div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noInput">
+      <div class="jp-Cell-outputWrapper">
+        <div class="jp-OutputArea jp-Cell-outputArea">
+          <div class="jp-OutputArea-child">
+            <div
+              class="
+                jp-RenderedHTMLCommon
+                jp-RenderedHTML
+                jp-OutputArea-output
+                jp-OutputArea-executeResult
+              "
+              data-mime-type="text/html"
+            >
+              <script>
+                code_show = true;
+                function code_toggle() {
+                  if (code_show) {
+                    $("div.input").hide();
+                  } else {
+                    $("div.input").show();
+                  }
+                  code_show = !code_show;
+                }
+                $(document).ready(code_toggle);
+              </script>
+              <form action="javascript:code_toggle()"></form>
             </div>
           </div>
         </div>
@@ -18830,30 +18627,7 @@ all of MD as it is not optimized for dense, information rich UIs.
         </h3>
       </div>
     </div>
-    <div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-      <div class="jp-Cell-inputWrapper">
-        <div class="jp-InputArea jp-Cell-inputArea">
-          <div
-            class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor"
-            data-type="inline"
-          >
-            <div class="CodeMirror cm-s-jupyter">
-              <div class="highlight hl-ipython3">
-                <pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;ggplot&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">nonGoal</span><span class="p">[</span><span class="s1">&#39;Distance from net&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">bins</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;no-goals&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">goal</span><span class="p">[</span><span class="s1">&#39;Distance from net&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">bins</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;goals&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Distance from net&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Shot counts&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Shot counts binned by distance&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
+    <div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noInput">
       <div class="jp-Cell-outputWrapper">
         <div class="jp-OutputArea jp-Cell-outputArea">
           <div class="jp-OutputArea-child">
@@ -18897,30 +18671,7 @@ all of MD as it is not optimized for dense, information rich UIs.
         </h3>
       </div>
     </div>
-    <div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-      <div class="jp-Cell-inputWrapper">
-        <div class="jp-InputArea jp-Cell-inputArea">
-          <div
-            class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor"
-            data-type="inline"
-          >
-            <div class="CodeMirror cm-s-jupyter">
-              <div class="highlight hl-ipython3">
-                <pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;ggplot&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">nonGoal</span><span class="p">[</span><span class="s1">&#39;Angle from net&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">bins</span><span class="o">=</span><span class="mi">36</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;no-goals&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">goal</span><span class="p">[</span><span class="s1">&#39;Angle from net&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">bins</span><span class="o">=</span><span class="mi">36</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;goals&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Angle from net&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Shot counts&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Shot counts binned by angle&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
+    <div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noInput">
       <div class="jp-Cell-outputWrapper">
         <div class="jp-OutputArea jp-Cell-outputArea">
           <div class="jp-OutputArea-child">
@@ -18967,26 +18718,7 @@ all of MD as it is not optimized for dense, information rich UIs.
         </h3>
       </div>
     </div>
-    <div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-      <div class="jp-Cell-inputWrapper">
-        <div class="jp-InputArea jp-Cell-inputArea">
-          <div
-            class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor"
-            data-type="inline"
-          >
-            <div class="CodeMirror cm-s-jupyter">
-              <div class="highlight hl-ipython3">
-                <pre><span></span><span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
-<span class="n">df_dataset_R</span> <span class="o">=</span> <span class="n">df_dataset_R</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">tips</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">load_dataset</span><span class="p">(</span><span class="s2">&quot;tips&quot;</span><span class="p">)</span>
-<span class="n">g</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">jointplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;Distance from net&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;Angle from net&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span> <span class="n">df_dataset_R</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hex&quot;</span><span class="p">)</span>
-</pre>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
+    <div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noInput">
       <div class="jp-Cell-outputWrapper">
         <div class="jp-OutputArea jp-Cell-outputArea">
           <div class="jp-OutputArea-child">
